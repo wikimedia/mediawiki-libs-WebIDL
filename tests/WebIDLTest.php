@@ -15,6 +15,8 @@ use WikiPEG\SyntaxError;
  *
  * PLEASE UPDATE THE HASH ABOVE WHEN YOU UPDATE THESE TESTS
  * FROM UPSTREAM.
+ *
+ * @coversDefaultClass \Wikimedia\WebIDL\WebIDL
  */
 class WebIDLTest extends \PHPUnit\Framework\TestCase {
 
@@ -24,6 +26,7 @@ class WebIDLTest extends \PHPUnit\Framework\TestCase {
 	 * (as a side-effect of parsing).
 	 *
 	 * @dataProvider invalidTestsProvider
+	 * @covers ::parse()
 	 */
 	public function testInvalidWebIDL( string $filename ) {
 		$input = file_get_contents(
@@ -57,6 +60,7 @@ class WebIDLTest extends \PHPUnit\Framework\TestCase {
 	 * baseline output given for webidl2.js.
 	 *
 	 * @dataProvider validTestsProvider
+	 * @covers ::parse()
 	 */
 	public function testValidWebIDL( string $filename ) {
 		$input = file_get_contents(
