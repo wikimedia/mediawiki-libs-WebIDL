@@ -72,8 +72,31 @@ class WebIDLTest extends \PHPUnit\Framework\TestCase {
 		$actual = WebIDL::parse( $input, [
 			'sourceName' => $filename . ".webidl",
 			'concrete' => true,
+			'keepComments' => false,
 		] );
 		$expected = json_decode( $baseline, true );
+		$this->assertEquals( $expected, $actual );
+	}
+
+	/**
+	 * Test leading/trailing comment parsing.
+	 *
+	 * @dataProvider commentsProvider
+	 * @covers ::parse()
+	 */
+	public function testWebIDLComments( string $filename ) {
+		$input = file_get_contents(
+			__DIR__ . "/comments/idl/" . $filename . ".webidl"
+		);
+		$baseline = file_get_contents(
+			__DIR__ . "/comments/baseline/" . $filename . ".json"
+		);
+		$actual = WebIDL::parse( $input, [
+			'sourceName' => $filename . ".webidl",
+			'keepComments' => true,
+		] );
+		$expected = json_decode( $baseline, true );
+		error_log( json_encode( $actual, JSON_PRETTY_PRINT ) );
 		$this->assertEquals( $expected, $actual );
 	}
 
@@ -83,6 +106,10 @@ class WebIDLTest extends \PHPUnit\Framework\TestCase {
 
 	public function validTestsProvider() {
 		return self::listFiles( __DIR__ . "/syntax/idl/" );
+	}
+
+	public function commentsProvider() {
+		return self::listFiles( __DIR__ . "/comments/idl/" );
 	}
 
 	private static function listFiles( $dirname ) {

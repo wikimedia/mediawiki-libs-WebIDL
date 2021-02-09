@@ -4,11 +4,11 @@ namespace Wikimedia\WebIDL;
 
 class Grammar extends \WikiPEG\PEGParserBase {
 	/**
-	 * @param string $filename
 	 * @param string $contents
+	 * @param array $options
 	 * @return array
 	 */
-	public static function load( string $filename, string $contents ) {
+	public static function load( string $contents, array $options = [] ) {
 	}
 
 	/**

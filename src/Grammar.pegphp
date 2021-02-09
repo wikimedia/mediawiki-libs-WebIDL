@@ -17,16 +17,39 @@ namespace Wikimedia\WebIDL;
 	private $filename = '';
 	/** @var int */
 	private $lineNum = 1;
+	/** @var bool */
+	private $keepComments = true;
+	/** @var string[]|null */
+	private $lastComments = null;
+	/** @var ?string */
+	private $lastWS = null;
 
 	/**
-	 * @param string $filename
 	 * @param string $contents
+	 * @param array $options
 	 * @return array
 	 */
-	public static function load( string $filename, string $contents ) {
+	public static function load( string $contents, array $options = [] ) {
 		$g = new Grammar();
-		$g->filename = $filename;
-		return $g->parse( $contents );
+		$g->filename = $options['sourceName'] ?? "<unknown>";
+		$g->keepComments = $options['keepComments'] ?? true;
+		$ast = $g->parse( $contents );
+		if ( $options['concrete'] ?? false ) {
+			$ast[] = [
+				'type' => 'eof',
+				'value' => '',
+				'trivia' => $g->lastWS ?? ''
+			];
+		}
+		return $ast;
+	}
+
+	private function withComments( $ast ) {
+		if ( !$this->keepComments ) {
+			unset( $ast['leadingComments'] );
+			unset( $ast['trailingComments'] );
+		}
+		return $ast;
 	}
 
 	private static $basicType = [
@@ -109,17 +132,33 @@ otherchar = !otherterminals ![()\[\]{},] [^\t\n\r 0-9A-Za-z]
 /* The 'ignore' production -- we have to include this after every
  * terminal; nonterminals are assumed to include it as trailing context.
  */
-_ = ( whitespace / comment )*
+_ = r:( $whitespace / $comment )* {
+  $c = array_values(array_filter($r, function($v) { return $v[0] === '/'; }));
+  $this->lastComments = $c;
+  $this->lastWS = implode( '', $r );
+  return $c;
+}
+
+/* This is a variant used to capture trailing comments before first eol */
+c_ = r:( [ \t] { return null; } / $comment )* _ {
+  return array_values(array_filter($r, function($v) { return $v !== null; }));
+}
 
 /* This is a variant used after "identifier-like" terminals to ensure
  * they don't run together.
  */
-i_ = ![-_0-9A-Za-z] _
+i_ = ![-_0-9A-Za-z] c:_ { return $c; }
+
+leadingComments = "" {
+    $r = $this->lastComments; $this->lastComments = null; return $r;
+}
 
 /* WebIDL non-terminals */
 Definitions = (
-    e:ExtendedAttributeList d:Definition {
-        $d['extAttrs'] = $e; return $d;
+    c:leadingComments e:ExtendedAttributeList d:Definition {
+      $d['extAttrs'] = $e;
+      $d['leadingComments'] = $c;
+      return $this->withComments($d);
     }
 )*
 
@@ -168,14 +207,15 @@ InterfaceOrMixin =
   / MixinRest
 
 InterfaceRest =
-    name:identifier _ inh:Inheritance "{" _ m:InterfaceMembers "}" _ ";" _ {
-    return [
+    name:identifier _ inh:Inheritance "{" _ m:InterfaceMembers "}" _ ";" c:c_ {
+    return $this->withComments( [
         'type' => 'interface',
         'name' => $name,
         'inheritance' => $inh,
         'members' => $m,
         'partial' => false,
-    ];
+        'trailingComments' => $c,
+    ] );
 }
 
 Partial = "partial" i_ p:PartialDefinition {
@@ -202,8 +242,10 @@ PartialInterfaceRest =
 }
 
 InterfaceMembers = (
-    e:ExtendedAttributeList m:InterfaceMember {
-      $m['extAttrs'] = $e; return $m;
+    c:leadingComments e:ExtendedAttributeList m:InterfaceMember {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
     }
 )*
 
@@ -212,8 +254,10 @@ InterfaceMember =
   / Constructor
 
 PartialInterfaceMembers = (
-    e:ExtendedAttributeList m:PartialInterfaceMember {
-      $m['extAttrs'] = $e; return $m;
+    c:leadingComments e:ExtendedAttributeList m:PartialInterfaceMember {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
     }
 )*
 
@@ -244,8 +288,10 @@ MixinRest = "mixin" i_ name:identifier _ "{" _ m:MixinMembers "}" _ ";" _ {
 }
 
 MixinMembers = (
-    e:ExtendedAttributeList m:MixinMember {
-      $m['extAttrs'] = $e; return $m;
+    c:leadingComments e:ExtendedAttributeList m:MixinMember {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
     }
 )*
 
@@ -280,8 +326,10 @@ CallbackRestOrInterface =
 }
 
 CallbackInterfaceMembers = (
-    e:ExtendedAttributeList m:CallbackInterfaceMember {
-      $m['extAttrs'] = $e; return $m;
+    c:leadingComments e:ExtendedAttributeList m:CallbackInterfaceMember {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
     }
 )*
 
@@ -290,13 +338,14 @@ CallbackInterfaceMember =
   / RegularOperation
 
 Const =
-    "const" i_ t:ConstType name:identifier _ "=" _ v:ConstValue ";" _ {
-    return [
+    "const" i_ t:ConstType name:identifier _ "=" _ v:ConstValue ";" c:c_ {
+    return $this->withComments( [
         'type' => 'const',
         'idlType' => $t,
         'name' => $name,
         'value' => $v,
-    ];
+        'trailingComments' => $c,
+    ] );
 }
 
 ConstValue =
@@ -354,14 +403,15 @@ InheritAttribute = "inherit" i_ a:AttributeRest {
 }
 
 AttributeRest =
-    "attribute" i_ t:TypeWithExtendedAttributes name:AttributeName ";" _ {
-    return [
+    "attribute" i_ t:TypeWithExtendedAttributes name:AttributeName ";" c:c_ {
+    return $this->withComments( [
         'type' => 'attribute',
         'name' => $name,
         'special' => '',
         'readonly' => false,
         'idlType' => self::setType($t, 'attribute-type'),
-    ];
+        'trailingComments' => $c,
+    ] );
 }
 
 AttributeName =
@@ -398,15 +448,16 @@ Special = s:$(
   / "setter"
   / "deleter" ) i_ { return $s; }
 
-OperationRest = name:OptionalOperationName "(" _ args:ArgumentList ")" _ ";" _ {
-    return [
+OperationRest = name:OptionalOperationName "(" _ args:ArgumentList ")" _ ";" c:c_ {
+    return $this->withComments( [
         'type' => 'operation',
         'special' => '',
         'idlType' => null,
         'name' => $name,
         'arguments' => $args,
         'extAttrs' => null,
-    ];
+        'trailingComments' => $c,
+    ] );
 }
 
 OptionalOperationName =
@@ -460,11 +511,12 @@ ArgumentName =
 Ellipsis = ("..." _)?
 
 Constructor =
-    "constructor" i_ "(" _ args:ArgumentList ")" _ ";" _ {
-      return [
+    "constructor" i_ "(" _ args:ArgumentList ")" _ ";" c:c_ {
+        return $this->withComments( [
           'type' => 'constructor',
           'arguments' => $args,
-      ];
+          'trailingComments' => $c,
+        ] );
   }
 
 Stringifier =
@@ -479,13 +531,14 @@ StringifierRest =
     return $a;
   }
   / RegularOperation
-  / ";" _ {
-    return [
+  / ";" c:c_ {
+    return $this->withComments( [
         'type' => 'operation',
         'name' => '',
         'arguments' => [],
         'special' => 'stringifier',
-    ];
+        'trailingComments' => $c,
+    ] );
 }
 
 StaticMember = "static" i_ rest:StaticMemberRest {
@@ -501,28 +554,30 @@ StaticMemberRest =
   / RegularOperation
 
 Iterable =
-    "iterable" i_ "<" _ t1:TypeWithExtendedAttributes t2:OptionalType ">" _ ";" _ {
-        return [
+    "iterable" i_ "<" _ t1:TypeWithExtendedAttributes t2:OptionalType ">" _ ";" c:c_ {
+        return $this->withComments( [
             'type' => 'iterable',
             'idlType' => $t2 ? [ $t1, $t2 ] : [ $t1 ],
             'readonly' => false,
             'async' => false,
             'arguments' => [],
-        ];
+            'trailingComments' => $c,
+        ] );
     }
 
 OptionalType =
     ( "," _ t:TypeWithExtendedAttributes { return $t; } )?
 
 AsyncIterable =
-    "async" i_ "iterable" i_ "<" _ t1:TypeWithExtendedAttributes t2:OptionalType ">" _ args:OptionalArgumentList ";" _ {
-        return [
+    "async" i_ "iterable" i_ "<" _ t1:TypeWithExtendedAttributes t2:OptionalType ">" _ args:OptionalArgumentList ";" c:c_ {
+        return $this->withComments( [
             'type' => 'iterable',
             'idlType' => $t2 ? [ $t1, $t2 ] : [ $t1 ],
             'readonly' => false,
             'async' => true,
             'arguments' => $args ?? [],
-        ];
+            'trailingComments' => $c,
+        ] );
     }
 
 OptionalArgumentList =
@@ -532,28 +587,30 @@ ReadWriteMaplike =
     MaplikeRest
 
 MaplikeRest =
-    "maplike" i_ "<" _ t1:TypeWithExtendedAttributes "," _ t2:TypeWithExtendedAttributes ">" _ ";" _ {
-        return [
+    "maplike" i_ "<" _ t1:TypeWithExtendedAttributes "," _ t2:TypeWithExtendedAttributes ">" _ ";" c:c_ {
+        return $this->withComments( [
             'type' => 'maplike',
             'idlType' => [ $t1, $t2 ],
             'readonly' => false,
             'async' => false,
             'arguments' => [],
-        ];
+            'trailingComments' => $c,
+        ] );
     }
 
 ReadWriteSetlike =
     SetlikeRest
 
 SetlikeRest =
-    "setlike" i_ "<" _ t:TypeWithExtendedAttributes ">" _ ";" _ {
-         return [
+    "setlike" i_ "<" _ t:TypeWithExtendedAttributes ">" _ ";" c:c_ {
+         return $this->withComments( [
              'type' => 'setlike',
              'idlType' => [ $t ],
              'readonly' => false,
              'async' => false,
              'arguments' => [],
-         ];
+             'trailingComments' => $c,
+         ] );
     }
 
 Namespace =
@@ -568,8 +625,10 @@ Namespace =
 }
 
 NamespaceMembers = (
-    e:ExtendedAttributeList m:NamespaceMember {
-      $m['extAttrs'] = $e; return $m;
+    c:leadingComments e:ExtendedAttributeList m:NamespaceMember {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
     }
 )*
 
@@ -588,11 +647,13 @@ Dictionary =
         ];
     }
 
-DictionaryMembers = DictionaryMember*
-
-DictionaryMember = e:ExtendedAttributeList d:DictionaryMemberRest {
-    $d['extAttrs'] = $e; return $d;
-}
+DictionaryMembers = (
+    c:leadingComments e:ExtendedAttributeList m:DictionaryMemberRest {
+      $m['extAttrs'] = $e;
+      $m['leadingComments'] = $c;
+      return $this->withComments( $m );
+    }
+)*
 
 DictionaryMemberRest =
     "required" i_ t:TypeWithExtendedAttributes name:identifier _ ";" _ {
@@ -636,10 +697,10 @@ Enum = "enum" i_ name:identifier _ "{" _ vals:EnumValueList "}" _ ";" _ {
 }
 
 EnumValueList = s:string _ vals:EnumValueListComma {
-    array_unshift($vals, [
+    array_unshift( $vals, [
         'type' => 'enum-value',
         'value' => $s,
-    ]);
+    ] );
     return $vals;
 }
 
@@ -649,10 +710,10 @@ EnumValueListComma =
 
 EnumValueListString =
     s:string _ vals:EnumValueListComma {
-    array_unshift($vals, [
+    array_unshift( $vals, [
         'type' => 'enum-value',
         'value' => $s,
-    ]);
+    ] );
     return $vals;
   }
   / "" { return []; }

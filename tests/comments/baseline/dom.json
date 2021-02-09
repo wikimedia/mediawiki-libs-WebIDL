@@ -1,0 +1,360 @@
+[
+    {
+        "type": "interface",
+        "name": "Node",
+        "inheritance": "EventTarget",
+        "members": [
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "ELEMENT_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "1"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "ATTRIBUTE_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "2"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "TEXT_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "3"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "CDATA_SECTION_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "4"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "ENTITY_REFERENCE_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "5"
+                },
+                "trailingComments": [
+                    "\/\/ legacy"
+                ],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "ENTITY_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "6"
+                },
+                "trailingComments": [
+                    "\/\/ legacy"
+                ],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "PROCESSING_INSTRUCTION_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "7"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "COMMENT_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "8"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "DOCUMENT_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "9"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "DOCUMENT_TYPE_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "10"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "DOCUMENT_FRAGMENT_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "11"
+                },
+                "trailingComments": [],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "const",
+                "idlType": {
+                    "type": "const-type",
+                    "idlType": "unsigned short",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "NOTATION_NODE",
+                "value": {
+                    "type": "number",
+                    "value": "12"
+                },
+                "trailingComments": [
+                    "\/\/ legacy"
+                ],
+                "extAttrs": [],
+                "leadingComments": []
+            },
+            {
+                "type": "operation",
+                "special": "",
+                "idlType": {
+                    "idlType": "Node",
+                    "type": "return-type",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "cloneNode",
+                "arguments": [
+                    {
+                        "type": "argument",
+                        "default": {
+                            "type": "boolean",
+                            "value": false
+                        },
+                        "optional": true,
+                        "variadic": false,
+                        "idlType": {
+                            "idlType": "boolean",
+                            "type": "argument-type",
+                            "extAttrs": [],
+                            "generic": "",
+                            "nullable": false,
+                            "union": false
+                        },
+                        "name": "deep",
+                        "extAttrs": []
+                    }
+                ],
+                "extAttrs": [
+                    {
+                        "name": "CEReactions",
+                        "type": "extended-attribute",
+                        "arguments": [],
+                        "rhs": null
+                    },
+                    {
+                        "name": "NewObject",
+                        "type": "extended-attribute",
+                        "arguments": [],
+                        "rhs": null
+                    }
+                ],
+                "trailingComments": [],
+                "leadingComments": [
+                    "\/** cloneNode *\/"
+                ]
+            },
+            {
+                "type": "operation",
+                "special": "",
+                "idlType": {
+                    "idlType": "boolean",
+                    "type": "return-type",
+                    "extAttrs": [],
+                    "generic": "",
+                    "nullable": false,
+                    "union": false
+                },
+                "name": "isSameNode",
+                "arguments": [
+                    {
+                        "type": "argument",
+                        "default": null,
+                        "optional": false,
+                        "variadic": false,
+                        "idlType": {
+                            "idlType": "Node",
+                            "type": "argument-type",
+                            "extAttrs": [],
+                            "generic": "",
+                            "nullable": true,
+                            "union": false
+                        },
+                        "name": "otherNode",
+                        "extAttrs": []
+                    }
+                ],
+                "extAttrs": [],
+                "trailingComments": [
+                    "\/\/ legacy alias of ==="
+                ],
+                "leadingComments": []
+            }
+        ],
+        "partial": false,
+        "trailingComments": [
+            "\/\/ Trailing comment on Node"
+        ],
+        "extAttrs": [
+            {
+                "name": "Exposed",
+                "rhs": {
+                    "type": "identifier",
+                    "value": "Window"
+                },
+                "type": "extended-attribute",
+                "arguments": []
+            }
+        ],
+        "leadingComments": [
+            "\/** Node interface *\/"
+        ]
+    },
+    {
+        "type": "dictionary",
+        "name": "Foo",
+        "partial": false,
+        "members": [],
+        "inheritance": null,
+        "extAttrs": [],
+        "leadingComments": [
+            "\/** Leading comment *\/"
+        ]
+    }
+]

@@ -17,15 +17,6 @@ class WebIDL {
 	 * @return array The Abstract Syntax Tree
 	 */
 	public static function parse( string $webidl, array $options = [] ): array {
-		$ast = Grammar::load( $options['sourceName'] ?? "<unknown>", $webidl );
-		if ( $options['concrete'] ?? false ) {
-			$endsInNL = substr( $webidl, -1 ) === "\n";
-			$ast[] = [
-				'type' => 'eof',
-				'value' => '',
-				'trivia' => $endsInNL ? "\n" : "",
-			];
-		}
-		return $ast;
+		return Grammar::load( $webidl, $options );
 	}
 }
