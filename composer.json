@@ -18,14 +18,14 @@
 		"wikimedia/wikipeg": "^2.0.5"
 	},
 	"require-dev": {
-		"php-parallel-lint/php-console-color": "^0.3.0",
-		"php-parallel-lint/php-parallel-lint": "1.2.0",
-		"mediawiki/mediawiki-codesniffer": "34.0.0",
+		"ext-json": "*",
+		"mediawiki/mediawiki-codesniffer": "36.0.0",
 		"mediawiki/mediawiki-phan-config": "0.10.6",
-		"mediawiki/minus-x": "1.1.0",
-		"ockcyp/covers-validator": "1.3.1",
-		"phpunit/phpunit": "^8.5",
-		"ext-json": "*"
+		"mediawiki/minus-x": "1.1.1",
+		"ockcyp/covers-validator": "1.3.3",
+		"php-parallel-lint/php-console-color": "^0.3.0",
+		"php-parallel-lint/php-parallel-lint": "1.3.0",
+		"phpunit/phpunit": "^8.5"
 	},
 	"autoload": {
 		"psr-4": {
