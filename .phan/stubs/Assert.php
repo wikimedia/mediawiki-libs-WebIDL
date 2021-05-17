@@ -31,5 +31,5 @@ abstract class Assert {
 	 * @psalm-return never-return
 	 */
 	public static function markTestSkipped( string $message = '' ): void {
- }
+	}
 }
