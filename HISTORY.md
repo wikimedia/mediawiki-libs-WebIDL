@@ -1,6 +1,6 @@
 # Release History
 
-## WebIDL x.x.x (not yet released)
+## WebIDL 1.0.3 (2021-08-07)
 * Update dependencies.
 
 ## WebIDL 1.0.2 (2021-02-10)
