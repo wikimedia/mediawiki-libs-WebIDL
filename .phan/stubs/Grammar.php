@@ -2,7 +2,7 @@
 
 namespace Wikimedia\WebIDL;
 
-class Grammar extends \WikiPEG\PEGParserBase {
+class Grammar extends \Wikimedia\WikiPEG\PEGParserBase {
 	/**
 	 * @param string $contents
 	 * @param array $options

@@ -3,7 +3,7 @@
 namespace Wikimedia\WebIDL\Tests;
 
 use Wikimedia\WebIDL\WebIDL;
-use WikiPEG\SyntaxError;
+use Wikimedia\WikiPEG\SyntaxError;
 
 /**
  * Run test cases from webidl2.js, found in `tests/invalid` and
