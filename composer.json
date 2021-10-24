@@ -29,7 +29,7 @@
 	},
 	"require-dev": {
 		"ext-json": "*",
-		"mediawiki/mediawiki-codesniffer": "37.0.0",
+		"mediawiki/mediawiki-codesniffer": "38.0.0",
 		"mediawiki/mediawiki-phan-config": "0.11.0",
 		"mediawiki/minus-x": "1.1.1",
 		"ockcyp/covers-validator": "1.3.3",
@@ -46,7 +46,7 @@
 			"parallel-lint . --exclude vendor",
 			"phpunit",
 			"covers-validator",
-			"phpcs -sp",
+			"@phpcs",
 			"@phan",
 			"minus-x check .",
 			"echo Ensure the binary is not broken:",
@@ -59,6 +59,7 @@
 			"phpcbf"
 		],
 		"update-history": "update-history patch",
-		"wikipeg": "npm run wikipeg"
+		"wikipeg": "npm run wikipeg",
+		"phpcs": "phpcs -sp"
 	}
 }
