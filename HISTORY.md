@@ -1,6 +1,6 @@
 # Release History
 
-## WebIDL x.x.x (not yet released)
+## WebIDL 1.0.4 (2022-12-07)
 * Update to wikipeg 2.0.6.
 * Update other dependencies.
 
