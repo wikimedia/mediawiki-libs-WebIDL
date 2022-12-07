@@ -2,6 +2,7 @@
 
 ## WebIDL x.x.x (not yet released)
 * Update to wikipeg 2.0.6.
+* Update other dependencies.
 
 ## WebIDL 1.0.3 (2021-08-07)
 * Update dependencies.
