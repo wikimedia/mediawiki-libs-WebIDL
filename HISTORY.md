@@ -1,6 +1,8 @@
 # Release History
 
 ## WebIDL x.x.x (not yet released)
+* Drop PHP 7.2 and PHP 7.3 support.
+* Update dependencies.
 
 ## WebIDL 1.0.4 (2022-12-07)
 * Update to wikipeg 2.0.6.
