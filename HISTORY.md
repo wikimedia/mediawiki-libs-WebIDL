@@ -1,5 +1,7 @@
 # Release History
 
+## WebIDL x.x.x (not yet released)
+
 ## WebIDL 1.2.0 (2025-08-15)
 * Drop support for PHP < 8.1.
 * Update dependencies.
