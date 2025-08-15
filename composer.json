@@ -25,7 +25,7 @@
 	},
 	"require": {
 		"php": ">=8.1",
-		"wikimedia/wikipeg": "^2.0.6"
+		"wikimedia/wikipeg": "^6.0.0"
 	},
 	"require-dev": {
 		"ext-json": "*",
@@ -59,7 +59,7 @@
 			"phpcbf"
 		],
 		"update-history": "update-history patch",
-		"wikipeg": "npm run wikipeg",
+		"wikipeg": "fresh-node -- npm run wikipeg",
 		"phpcs": "phpcs -sp"
 	},
 	"config": {

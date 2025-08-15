@@ -2,6 +2,7 @@
 
 ## WebIDL x.x.x (not yet released)
 * Drop support for PHP < 8.1.
+* Update dependencies.
 
 ## WebIDL 1.1.0 (2023-02-24)
 * Drop PHP 7.2 and PHP 7.3 support.
