@@ -96,19 +96,18 @@ class WebIDLTest extends \PHPUnit\Framework\TestCase {
 			'keepComments' => true,
 		] );
 		$expected = json_decode( $baseline, true );
-		error_log( json_encode( $actual, JSON_PRETTY_PRINT ) );
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function invalidTestsProvider() {
+	public static function invalidTestsProvider() {
 		return self::listFiles( __DIR__ . "/invalid/idl/" );
 	}
 
-	public function validTestsProvider() {
+	public static function validTestsProvider() {
 		return self::listFiles( __DIR__ . "/syntax/idl/" );
 	}
 
-	public function commentsProvider() {
+	public static function commentsProvider() {
 		return self::listFiles( __DIR__ . "/comments/idl/" );
 	}
 
