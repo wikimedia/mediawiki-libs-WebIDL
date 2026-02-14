@@ -91,7 +91,7 @@ start = _ d:Definitions { return $d; }
 /* Line number bookkeeping.
  * Be careful about backtracking after you successfully match this production.
  */
-eol = nl:("\n" / "\r\n" / "\r") { $this->lineNum++; return $nl; }
+eol [pure=false] = nl:("\n" / "\r\n" / "\r") { $this->lineNum++; return $nl; }
 
 /* WebIDL terminals */
 integer = m:opt_minus n:( decimal_integer / hex_integer / octal_integer ) {
@@ -106,7 +106,7 @@ hex_integer = ("0x" / "0X" ) s:$( [0-9A-Fa-f]+ ) { return hexdec($s); }
 
 octal_integer = s:$( "0" [0-7]* ) { return octdec( $s ); }
 
-decimal = s:$( m:opt_minus (
+decimal = s:$( opt_minus (
     ( [0-9]+ "." [0-9]* / [0-9]* "." [0-9]+ ) ( [Ee] [+-]? [0-9]+ )?
   /  [0-9]+ [Ee] [+-]? [0-9]+
 ) ) { return floatval( $s ); }
@@ -132,7 +132,7 @@ otherchar = !otherterminals ![()\[\]{},] [^\t\n\r 0-9A-Za-z]
 /* The 'ignore' production -- we have to include this after every
  * terminal; nonterminals are assumed to include it as trailing context.
  */
-_ = r:( $whitespace / $comment )* {
+_ [pure=false] = r:( $whitespace / $comment )* {
   $c = array_values(array_filter($r, function($v) { return $v[0] === '/'; }));
   $this->lastComments = $c;
   $this->lastWS = implode( '', $r );
@@ -149,7 +149,7 @@ c_ = r:( [ \t] { return null; } / $comment )* _ {
  */
 i_ = ![-_0-9A-Za-z] c:_ { return $c; }
 
-leadingComments = "" {
+leadingComments [pure=false] = "" {
     $r = $this->lastComments; $this->lastComments = null; return $r;
 }
 

@@ -2,10 +2,10 @@
 	"name": "webidl-php",
 	"description": "A WebIDL parser for PHP",
 	"devDependencies": {
-		"wikipeg": "^6.0.0"
+		"wikipeg": "^6.1.1"
 	},
 	"scripts": {
-		"wikipeg": "wikipeg --php --class-name Grammar src/Grammar.pegphp src/Grammar.php"
+		"wikipeg": "wikipeg --extra-options '{\"optimizePureActions\":true}' --php --class-name Grammar src/Grammar.pegphp src/Grammar.php"
 	},
 	"repository": {
 		"type": "git",
