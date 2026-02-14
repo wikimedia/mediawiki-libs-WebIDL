@@ -1,5 +1,7 @@
 # Release History
 
+## WebIDL x.x.x (not yet released)
+
 ## WebIDL 1.2.1 (2026-02-14)
 * Update to wikipeg 6.1.1.
 * Dependency updates for PHP 8.5.
